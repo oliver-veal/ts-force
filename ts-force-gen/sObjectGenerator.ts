@@ -1,4 +1,4 @@
-import { camelCase } from 'https://deno.land/x/lodash@4.17.19/dist/lodash.js';
+import camelCase from 'https://deno.land/x/case@v2.1.0/camelCase.ts';
 import { ChildRelationship, Field, Rest, SalesforceFieldType, SFieldProperties, SObjectDescribe } from '../ts-force/index.ts';
 import { ClassDeclaration, DecoratorStructure, JSDocStructure, PropertyDeclarationStructure, Scope, SourceFile, ImportDeclarationStructure, StructureKind, Writers } from 'https://deno.land/x/ts_morph@12.2.0/mod.ts';
 import { SObjectConfig } from './config.ts';
