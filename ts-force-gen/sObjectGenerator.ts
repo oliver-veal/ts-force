@@ -58,7 +58,7 @@ export class SObjectGenerator {
   * @param {string[]} sObjectConfigs: Salesforce API Object Names to generate Classes for
   * @memberof SObjectGenerator
   */
-  constructor(out: string | SourceFile, sObjectConfig: SObjectConfig, allConfigs: SObjectConfig[]) {
+  constructor(rest: Rest, out: string | SourceFile, sObjectConfig: SObjectConfig, allConfigs: SObjectConfig[]) {
     this.sObjectConfig = sObjectConfig;
     this.pickLists = new Map<string, [string, string][]>();
     if (typeof out === 'string') {
@@ -69,7 +69,7 @@ export class SObjectGenerator {
       this.singleFileMode = true;
     }
 
-    this.client = new Rest();
+    this.client = rest;
     this.fieldsTypeAlias = `${sObjectConfig.className}Fields`;
 
     this.allConfigsMap = new Map(
