@@ -2,6 +2,7 @@
   "deno.enable": true,
   "deno.suggest.imports.hosts": {
     "https://esm.sh": false,
-    "https://deno.land": true
+    "https://deno.land": true,
+    "https://salesforce": false
   }
 }
