@@ -3,7 +3,7 @@ import { SObjectGenerator, TS_FORCE_IMPORTS } from './sObjectGenerator.ts';
 import * as path from 'https://deno.land/std@0.113.0/path/mod.ts';
 import { SObjectConfig, Config } from './config.ts';
 import { cleanAPIName, replaceSource } from './util.ts';
-import { Rest } from '../ts-force/index.ts'
+import { setDefaultConfig } from '../ts-force/index.ts'
 
 export const generate = async (config: Config) => {
   let save = true;
@@ -62,10 +62,7 @@ export const generate = async (config: Config) => {
     index = replaceSource(indexPath);
   }
 
-  const rest = new Rest({
-    access_token: config.auth?.accessToken,
-    instance_url: config.auth?.instanceUrl,
-  })
+  setDefaultConfig(config.auth!)
 
   for (let sobConfig of sobConfigs) {
     let classSource: string | SourceFile;
@@ -80,7 +77,6 @@ export const generate = async (config: Config) => {
     }
 
     let gen = new SObjectGenerator(
-      rest,
       classSource,
       sobConfig,
       sobConfigs

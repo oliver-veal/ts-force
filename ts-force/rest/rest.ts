@@ -1,10 +1,8 @@
 import axios from 'https://deno.land/x/axiod@0.20.0-0/mod.ts'
-import { IAxiodResponse } from 'https://deno.land/x/axiod@0.20.0-0/interfaces.ts'
 
 import { SObjectDescribe } from './sObjectDescribe.ts';
 import { BaseConfig, ConfigParams, createConfig, DEFAULT_CONFIG } from '../auth/baseConfig.ts';
 import type { Limits, ApiLimit, QueryResponse, SearchResponse, InvokableResult } from './restTypes.ts';
-import { parseLimitsFromResponse } from './utils.ts';
 
 export class Rest {
   private static defaultInstance: Rest;
