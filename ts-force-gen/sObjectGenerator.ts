@@ -6,7 +6,7 @@ import { cleanAPIName, replaceSource } from './util.ts';
 
 export const TS_FORCE_IMPORTS: ImportDeclarationStructure = {
   kind: StructureKind.ImportDeclaration,
-  moduleSpecifier: 'https://raw.githubusercontent.com/oliver-veal/ts-force/master/ts-force/index.ts',
+  moduleSpecifier: '../deps.ts',
   namedImports: [
     { name: 'Rest' },
     { name: 'RestObject' },
