@@ -50,6 +50,7 @@ export class Rest {
         'Content-Type': 'application/json',
         'Accept': 'application/json'
       },
+      timeout: 600
       // maxContentLength: Infinity
     });
 
