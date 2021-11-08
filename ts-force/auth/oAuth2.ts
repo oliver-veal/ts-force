@@ -1,4 +1,4 @@
-import axios from 'https://deno.land/x/axiod@0.20.0-0/mod.ts'
+import axios from '../deps.ts'
 
 
 /**

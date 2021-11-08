@@ -117,6 +117,7 @@ export class SObjectGenerator {
     try {
       sobDescribe = await this.retrieveDescribe(sobConfig.apiName);
     } catch (e) {
+      console.error(e)
       throw new Error(`Could not retrieve describe metadata for ${sobConfig.apiName}. Check SObject spelling and authorization `);
     }
 

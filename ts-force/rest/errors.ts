@@ -1,4 +1,3 @@
-// import { AxiosError } from 'axios';
 import { CompositeBatchResult, InvokableResult } from '../index.ts';
 
 export interface AxiosErrorException {

@@ -1,4 +1,4 @@
-import axios from 'https://deno.land/x/axiod@0.20.0-0/mod.ts'
+import axios from '../deps.ts'
 
 import { SObjectDescribe } from './sObjectDescribe.ts';
 import { BaseConfig, ConfigParams, createConfig, DEFAULT_CONFIG } from '../auth/baseConfig.ts';
@@ -33,9 +33,10 @@ export class Rest {
       this.config = createConfig(config);
     } else {
       if (Rest.defaultInstance &&
-        Rest.defaultInstance.config.accessToken === DEFAULT_CONFIG.accessToken) {
+      Rest.defaultInstance.config.accessToken === DEFAULT_CONFIG.accessToken) {
         return Rest.defaultInstance;
       }
+
       //should probably be refactored to just happen when the default config is set
       this.config = { ...DEFAULT_CONFIG };
       Rest.defaultInstance = this;
