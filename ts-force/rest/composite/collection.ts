@@ -71,7 +71,7 @@ export class CompositeCollection {
    * @param  {boolean} allOrNothing? if set true, salesforce will rollback on failures
    * @returns Promise<SaveResult[]> in order of pass SObjects
    */
-  public update = async (sobs: RestObject[], opts?: { allOrNothing?: boolean, sendAllFields?: boolean }): Promise<SaveResult[]> => {
+   public update = async (sobs: RestObject[], opts?: { allOrNothing?: boolean, sendAllFields?: boolean }): Promise<SaveResult[]> => {
     opts = opts || {};
     const dmlSobs = sobs.map((sob) => {
     // @ts-ignore
@@ -90,6 +90,32 @@ export class CompositeCollection {
 
     return results;
   }
+
+    /**
+   * Upserts up to 200 SObjects.
+   * @param  {RestObject[]} sobs SObjects to Update
+   * @param  {boolean} allOrNothing? if set true, salesforce will rollback on failures
+   * @returns Promise<SaveResult[]> in order of pass SObjects
+   */
+     public upsert = async <T extends RestObject>(sobs: T[], extId: string, opts?: { allOrNothing?: boolean, sendAllFields?: boolean }): Promise<SaveResult[]> => {
+      opts = opts || {};
+      const dmlSobs = sobs.map((sob) => {
+      // @ts-ignore
+        const dmlSob = sob.toJson({ dmlMode: opts.sendAllFields ? 'update' : 'update_modified_only' });
+        dmlSob['Id'] = sob.id;
+        return dmlSob;
+      });
+      let payload: InsertRequest = {
+        records: dmlSobs,
+        allOrNone: opts.allOrNothing !== false
+      };
+      let results: SaveResult[] = (await this.client.request.patch(this.endpoint + `/${sobs[0].attributes.type}/${extId}`, payload)).data;
+  
+      // clear out modified
+      this.resetModified(sobs, results);
+  
+      return results;
+    }
 
   /**
    * Deletes up to 200 SObjects.
