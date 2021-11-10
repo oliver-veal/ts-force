@@ -1,6 +1,6 @@
 // import { Reflect } from "https://deno.land/x/reflect_metadata@v0.1.12/Reflect.ts";
 // import { Reflect } from "../../../deno-reflect-metadata/Reflect.ts";
-import Reflect from "https://esm.sh/reflect-metadata@0.1.13"
+import "https://esm.sh/reflect-metadata@0.1.13"
 import { RestObject } from "./restObject.ts";
 
 export enum SalesforceFieldType {
