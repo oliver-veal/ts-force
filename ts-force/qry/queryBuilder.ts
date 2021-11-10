@@ -1,23 +1,23 @@
-import { FieldResolver } from './fieldResolver.ts';
-import { ConditionalClause, composeConditionalClause } from './conditional.ts';
-import { SFieldProperties, FieldProps, SObject } from '../index.ts';
-import { QueryOpts } from '../rest/restObject.ts';
+import { FieldResolver } from "./fieldResolver.ts";
+import { composeConditionalClause, ConditionalClause } from "./conditional.ts";
+import { FieldProps, SFieldProperties, SObject } from "../index.ts";
+import { QueryOpts } from "../rest/restObject.ts";
 
 type Omit<T, K> = Pick<T, Exclude<keyof T, K>>;
 
 export interface OrderBy {
   field?: string;
-  order?: 'ASC' | 'DESC';
-  nulls?: 'FIRST' | 'LAST';
+  order?: "ASC" | "DESC";
+  nulls?: "FIRST" | "LAST";
 }
 export type OrderByClause = OrderBy | OrderBy[];
 export interface GroupByClause {
   field: string | string[];
-  type?: 'CUBE' | 'ROLLUP';
+  type?: "CUBE" | "ROLLUP";
   having?: ConditionalClause;
 }
-export type UpdateClause = 'TRACKING' | 'VIEWSTAT';
-export type ForClause = 'VIEW' | 'UPDATE' | 'REFERENCE';
+export type UpdateClause = "TRACKING" | "VIEWSTAT";
+export type ForClause = "VIEW" | "UPDATE" | "REFERENCE";
 
 // export interface WithDataCategoryClause {
 //     conditions: WithDataCategoryCondition[];
@@ -30,7 +30,7 @@ export type ForClause = 'VIEW' | 'UPDATE' | 'REFERENCE';
 // }
 
 // remove 'from' because it will always be set by query builder
-export type SOQLQueryParams = Omit<SOQLQuery, 'from'>;
+export type SOQLQueryParams = Omit<SOQLQuery, "from">;
 
 export interface SOQLQuery {
   select: string[];
@@ -45,10 +45,13 @@ export interface SOQLQuery {
 }
 
 export interface SObjectStatic<T> {
-  new(): T;
+  new (): T;
   API_NAME: string;
-  FIELDS: { [K in keyof FieldProps<T>]: SFieldProperties; };
-  retrieve(qryParam: ((fields: FieldResolver<T>) => SOQLQueryParams) | string, opts?: QueryOpts): Promise<T[]>;
+  FIELDS: { [K in keyof FieldProps<T>]: SFieldProperties };
+  retrieve(
+    qryParam: ((fields: FieldResolver<T>) => SOQLQueryParams) | string,
+    opts?: QueryOpts,
+  ): Promise<T[]>;
   fromSFObject(sob: SObject): T;
 }
 
@@ -58,7 +61,10 @@ export interface SObjectStatic<T> {
  * @param from The SObject (generated class static) to generate the query for
  * @param buildQuery A function which accepts a field resolver for the `from` SObject returns the query to build (SOQLQueryParams)
  */
-export function buildQueryObject<T>(from: SObjectStatic<T>, buildQuery: (fields: FieldResolver<T>) => SOQLQueryParams): SOQLQuery {
+export function buildQueryObject<T>(
+  from: SObjectStatic<T>,
+  buildQuery: (fields: FieldResolver<T>) => SOQLQueryParams,
+): SOQLQuery {
   let fields = new FieldResolver(from);
   return { ...buildQuery(fields), ...{ from: from.API_NAME } };
 }
@@ -69,21 +75,38 @@ export function buildQueryObject<T>(from: SObjectStatic<T>, buildQuery: (fields:
  * @param from The SObject (generated class static) to generate the query for
  * @param buildQuery A function which accepts a field resolver for the `from` SObject returns the query to build (SOQLQueryParams)
  */
-export function buildQuery<T>(from: SObjectStatic<T>, buildQuery: (fields: FieldResolver<T>) => SOQLQueryParams) {
-  return composeSOQLQuery(buildQueryObject(from, buildQuery));
+export function buildQuery<T>(
+  from: SObjectStatic<T>,
+  buildQuery: (fields: FieldResolver<T>) => SOQLQueryParams,
+) {
+  const object = buildQueryObject(from, buildQuery);
+  const query = composeSOQLQuery(object);
+  return query;
 }
 
 export function composeSOQLQuery(qry: SOQLQuery): string {
-  let { from, select, where, limit, offset, groupBy, orderBy, for: forClause, update } = qry;
+  let {
+    from,
+    select,
+    where,
+    limit,
+    offset,
+    groupBy,
+    orderBy,
+    for: forClause,
+    update,
+  } = qry;
 
-  let ret = `SELECT ${select.filter((item, i, ar) => ar.indexOf(item) === i).join(', ')} FROM ${from}`;
+  let ret = `SELECT ${
+    select.filter((item, i, ar) => ar.indexOf(item) === i).join(", ")
+  } FROM ${from}`;
   if (where) {
     ret += ` WHERE ${composeConditionalClause(where)}`;
   }
   if (groupBy) {
     let grouping: string;
     if (Array.isArray(groupBy.field)) {
-      grouping = groupBy.field.join(', ');
+      grouping = groupBy.field.join(", ");
     } else {
       grouping = groupBy.field;
     }
@@ -103,8 +126,12 @@ export function composeSOQLQuery(qry: SOQLQuery): string {
     } else {
       orderByClause = [orderBy];
     }
-    let orderings = orderByClause.map(o => `${o.field}${o.order ? ' ' + o.order : ''}${o.nulls ? ` NULLS ${o.nulls}` : ''}`);
-    ret += ` ORDER BY ${orderings.join(', ')}`;
+    let orderings = orderByClause.map((o) =>
+      `${o.field}${o.order ? " " + o.order : ""}${
+        o.nulls ? ` NULLS ${o.nulls}` : ""
+      }`
+    );
+    ret += ` ORDER BY ${orderings.join(", ")}`;
   }
 
   if (limit) {
